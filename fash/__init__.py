@@ -11,6 +11,13 @@ from .profile.variables import Variables, VariablesEnum
 from .profile.aliases import Aliases
 
 class Shell:
+	def __init__(self):
+		self._builtin_commands = BuiltinCommands()
+		self._prompt = Prompt()
+		self._pattern_variables = re.compile(r"(?<!\\)\$(?:((?:[^\W\\]|\\.)+)|{(.*?)})", re.S)
+
+		self._last_exit_code = 0
+
 	def unrollAliases(self, line):
 		try:
 			command, *rest_of_line = line.split(maxsplit=1)
@@ -103,10 +110,3 @@ class Shell:
 				self._last_exit_code = 1
 
 		sys.exit(self._last_exit_code)
-
-	def __init__(self):
-		self._builtin_commands = BuiltinCommands()
-		self._prompt = Prompt()
-		self._pattern_variables = re.compile(r"(?<!\\)\$(?:((?:[^\W\\]|\\.)+)|{(.*?)})", re.S)
-
-		self._last_exit_code = 0
