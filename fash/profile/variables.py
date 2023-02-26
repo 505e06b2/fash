@@ -32,7 +32,7 @@ class _Variables(dict):
 	def __init__(self, *args, **kwargs):
 		super().__init__(*args, **kwargs)
 
-		self[VariablesEnum.shell] = "pitsh"
+		self[VariablesEnum.shell] = "fash"
 		self[VariablesEnum.PS1] = r"<bold><ansibrightred>\u</ansibrightred>@<ansibrightred>\h</ansibrightred></bold>:<bold><ansicyan>\w</ansicyan>\g</bold>\$ "
 		self[VariablesEnum.PS1_git_format] = " <ansibrightred>(%s)</ansibrightred>"
 		self[VariablesEnum.home] = lambda: os.environ.get("HOME") or os.environ.get("USERPROFILE") or None #not using pathlib.Path.expanduser allows the use of HOME on Windows in CPython 3.8+
