@@ -4,6 +4,39 @@ from prompt_toolkit.shortcuts import CompleteStyle
 from prompt_toolkit.styles import style_from_pygments_cls, Style
 from pygments.styles import get_style_by_name
 
+class _Variables(dict): #case insensitive (due to Windows being insensitive)
+	def _transform_key(self, key):
+		return key.upper()
+
+	def __getitem__(self, key):
+		try:
+			ret = super().__getitem__(self._transform_key(key))
+
+		except KeyError:
+			return ""
+
+		if callable(ret):
+			ret = ret()
+
+		return ret
+
+	def __setitem__(self, key, value):
+		return super().__setitem__(self._transform_key(key), value)
+
+	def __delitem__(self, key):
+		return super().__delitem__(self._transform_key(key))
+
+	def __init__(self, *args, **kwargs):
+		super().__init__(*args, **kwargs)
+
+	def get(self, key, default=None):
+		return super().get(self._transform_key(key), default)
+
+	def pop(self, key):
+		return super().pop(self._transform_key(key))
+
+Variables = _Variables()
+
 #for accessing system vars without typos
 class VariablesEnum(object):
 	shell = "SHELL"
@@ -16,24 +49,6 @@ class VariablesEnum(object):
 	#non-standard vars
 	completion_style = "COMPLETION_STYLE"
 	default_style = "DEFAULT_STYLE"
-
-class _Variables(dict):
-	def __getitem__(self, key):
-		try:
-			ret = super().__getitem__(key.upper())
-
-		except KeyError:
-			return ""
-
-		if callable(ret):
-			ret = ret()
-
-		return ret
-
-	def __init__(self, *args, **kwargs):
-		super().__init__(*args, **kwargs)
-
-Variables = _Variables()
 
 #default variables
 Variables[VariablesEnum.shell] = "fash"
@@ -66,6 +81,7 @@ Variables[VariablesEnum.default_style] = Style.from_dict({
 	"shell.file": "default"
 })
 
+#Import user_variables or create new user_profiles file
 try:
 	from .user_variables import *
 
