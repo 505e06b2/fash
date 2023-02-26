@@ -74,10 +74,9 @@ class PromptToolkitCompleter(Completer):
 
 		arg_match = self._pattern_get_cursor_arg.search(document.text_before_cursor)
 		if not arg_match:
-			#check filesystem from ./
-			return []
-
-		arg = arg_match.group(1)
+			arg = ""
+		else:
+			arg = arg_match.group(1)
 
 		if arg == document.text_before_cursor: #complete the command
 			print(f"\nSEARCH PATH or CWD if starts with ./ + aliases/functions - {arg}")
