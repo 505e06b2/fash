@@ -107,6 +107,6 @@ class Shell:
 	def __init__(self):
 		self._builtin_commands = BuiltinCommands()
 		self._prompt = Prompt()
-		self._pattern_variables = re.compile(r"[^\\]\$(?:((?:[^\W\\]|\\.)+)|{(.*?)})", re.S)
+		self._pattern_variables = re.compile(r"(?<!\\)\$(?:((?:[^\W\\]|\\.)+)|{(.*?)})", re.S)
 
 		self._last_exit_code = 0
