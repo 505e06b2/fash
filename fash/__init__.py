@@ -98,7 +98,7 @@ class Shell:
 					self._last_exit_code = found_builtin(args) or 0
 
 				else:
-					proc = subprocess.run([command] + args)
+					proc = subprocess.run([command] + args, env=Variables.environment)
 					self._last_exit_code = proc.returncode
 
 			except FileNotFoundError:

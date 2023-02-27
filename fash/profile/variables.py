@@ -5,6 +5,10 @@ from prompt_toolkit.styles import style_from_pygments_cls, Style
 from pygments.styles import get_style_by_name
 
 class _Variables(dict): #case insensitive (due to Windows being insensitive)
+	@property
+	def environment(self):
+		return {key: str(value) for key, value in self.items()}
+
 	def _transform_key(self, key):
 		return key.upper()
 
@@ -29,13 +33,18 @@ class _Variables(dict): #case insensitive (due to Windows being insensitive)
 	def __init__(self, *args, **kwargs):
 		super().__init__(*args, **kwargs)
 
+		#enforce uppercase keys
+		for key, value in self.copy().items():
+			super().__delitem__(key)
+			self[self._transform_key(key)] = value
+
 	def get(self, key, default=None):
 		return super().get(self._transform_key(key), default)
 
 	def pop(self, key):
 		return super().pop(self._transform_key(key))
 
-Variables = _Variables()
+Variables = _Variables(os.environ)
 
 #for accessing system vars without typos
 class VariablesEnum(object):
@@ -54,9 +63,9 @@ class VariablesEnum(object):
 Variables[VariablesEnum.shell] = "fash"
 Variables[VariablesEnum.PS1] = r"<bold><ansibrightred>\u</ansibrightred>@<ansibrightred>\h</ansibrightred></bold>:<bold><ansicyan>\w</ansicyan>\g</bold>\$ "
 Variables[VariablesEnum.PS1_git_format] = " <ansibrightred>(%s)</ansibrightred>"
-Variables[VariablesEnum.home] = lambda: os.environ.get("HOME") or os.environ.get("USERPROFILE") or None #not using pathlib.Path.expanduser allows the use of HOME on Windows in CPython 3.8+
-Variables[VariablesEnum.username] = lambda: os.environ.get("USER") or os.environ.get("USERNAME") or "?"
-Variables[VariablesEnum.hostname] = lambda: platform.node() or os.environ.get("COMPUTERNAME") or "?"
+Variables[VariablesEnum.home] = os.environ.get("HOME") or os.environ.get("USERPROFILE") or None #not using pathlib.Path.expanduser allows the use of HOME on Windows in CPython 3.8+
+Variables[VariablesEnum.username] = os.environ.get("USER") or os.environ.get("USERNAME") or "?"
+Variables[VariablesEnum.hostname] = platform.node() or os.environ.get("COMPUTERNAME") or "?"
 
 Variables[VariablesEnum.completion_style] = CompleteStyle.READLINE_LIKE
 
