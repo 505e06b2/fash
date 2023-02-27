@@ -48,7 +48,7 @@ Variables = _Variables(os.environ)
 
 #for accessing system vars without typos
 class VariablesEnum(object):
-	shell = "SHELL"
+	shell_name = "SHELL_NAME"
 	PS1 = "PS1"
 	PS1_git_format = "PS1_GIT_FORMAT"
 	home = "HOME"
@@ -60,7 +60,7 @@ class VariablesEnum(object):
 	default_style = "DEFAULT_STYLE"
 
 #default variables
-Variables[VariablesEnum.shell] = "fash"
+Variables[VariablesEnum.shell_name] = "fash"
 Variables[VariablesEnum.PS1] = r"<bold><ansibrightred>\u</ansibrightred>@<ansibrightred>\h</ansibrightred></bold>:<bold><ansicyan>\w</ansicyan>\g</bold>\$ "
 Variables[VariablesEnum.PS1_git_format] = " <ansibrightred>(%s)</ansibrightred>"
 Variables[VariablesEnum.home] = os.environ.get("HOME") or os.environ.get("USERPROFILE") or None #not using pathlib.Path.expanduser allows the use of HOME on Windows in CPython 3.8+

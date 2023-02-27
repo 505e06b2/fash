@@ -3,7 +3,7 @@ import os, sys
 from ..profile.variables import Variables, VariablesEnum
 
 def cd(self, args=[], stdout=sys.stdout, stderr=sys.stderr):
-	shell_name = Variables[VariablesEnum.shell]
+	shell_name = Variables[VariablesEnum.shell_name]
 
 	if not args:
 		home_dir = Variables[VariablesEnum.home]

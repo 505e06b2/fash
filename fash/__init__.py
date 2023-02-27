@@ -78,7 +78,7 @@ class Shell:
 			input_text = self.unrollAliases(input_text)
 
 			if not (input_text_expanded_vars := self.expandVariables(input_text)):
-				sys.stderr.write(f"{Variables[VariablesEnum.shell]}: {input_text}: bad substitution\n")
+				sys.stderr.write(f"{Variables[VariablesEnum.shell_name]}: {input_text}: bad substitution\n")
 				self._last_exit_code = 1
 				continue
 			else:
