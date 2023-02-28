@@ -1,5 +1,21 @@
 import os
 
+from .folder_list import FolderList
+
+#for accessing system vars without typos
+class VariablesEnum(object):
+	shell_name = "SHELL_NAME"
+	PS1 = "PS1"
+	PS1_git_format = "PS1_GIT_FORMAT"
+	home = "HOME"
+	username = "USERNAME"
+	hostname = "HOSTNAME"
+	path = "PATH"
+
+	#non-standard vars
+	completion_style = "COMPLETION_STYLE"
+	default_style = "DEFAULT_STYLE"
+
 class _Variables(dict): #case insensitive (due to Windows being insensitive)
 	@property
 	def environment(self):
@@ -34,6 +50,9 @@ class _Variables(dict): #case insensitive (due to Windows being insensitive)
 			super().__delitem__(key)
 			self[self._transform_key(key)] = value
 
+		#special values
+		self[VariablesEnum.path] = FolderList(self[VariablesEnum.path])
+
 	def get(self, key, default=None):
 		return super().get(self._transform_key(key), default)
 
@@ -43,3 +62,4 @@ class _Variables(dict): #case insensitive (due to Windows being insensitive)
 Variables = _Variables(os.environ)
 
 from .default_variables import *
+from .special_paths import *

@@ -4,20 +4,7 @@ from prompt_toolkit.shortcuts import CompleteStyle
 from prompt_toolkit.styles import style_from_pygments_cls, Style
 from pygments.styles import get_style_by_name
 
-from .__init__ import Variables
-
-#for accessing system vars without typos
-class VariablesEnum(object):
-	shell_name = "SHELL_NAME"
-	PS1 = "PS1"
-	PS1_git_format = "PS1_GIT_FORMAT"
-	home = "HOME"
-	username = "USERNAME"
-	hostname = "HOSTNAME"
-
-	#non-standard vars
-	completion_style = "COMPLETION_STYLE"
-	default_style = "DEFAULT_STYLE"
+from .__init__ import Variables, VariablesEnum
 
 #default variables
 Variables[VariablesEnum.shell_name] = "fash"
