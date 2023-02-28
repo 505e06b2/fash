@@ -3,12 +3,16 @@ import sys
 from ..path import Path
 
 class FolderList:
+	@property
+	def string(self):
+		return self._separator.join(self._store)
+
 	def __repr__(self):
 		if sys.platform == "win32":
 			return self._separator.join([Path.expand(collapsed_path) for collapsed_path in self._store])
 
 		else:
-			return self._separator.join(self._store)
+			return self.string
 
 	def __init__(self, original_str):
 		self._store = []
