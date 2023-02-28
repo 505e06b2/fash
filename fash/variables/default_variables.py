@@ -14,6 +14,7 @@ Variables[VariablesEnum.home] = os.environ.get("HOME") or os.environ.get("USERPR
 Variables[VariablesEnum.username] = os.environ.get("USER") or os.environ.get("USERNAME") or "?"
 Variables[VariablesEnum.hostname] = platform.node() or os.environ.get("COMPUTERNAME") or "?"
 
+Variables[VariablesEnum.win_executable_extensions] = [".exe", ".bat", ".cmd", ".vbs", ".py", ".ps1", ".csx"]
 Variables[VariablesEnum.completion_style] = CompleteStyle.READLINE_LIKE
 
 #To find the keys for the following dict, in Python REPL:

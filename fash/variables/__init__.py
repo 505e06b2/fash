@@ -13,6 +13,7 @@ class VariablesEnum(object):
 	path = "PATH"
 
 	#non-standard vars
+	win_executable_extensions = "WIN_EXECUTABLE_EXT"
 	completion_style = "COMPLETION_STYLE"
 	default_style = "DEFAULT_STYLE"
 

@@ -3,7 +3,8 @@ from pathlib import Path as PathLib
 
 from prompt_toolkit.completion import Completion, Completer
 
-from ..variables import SpecialPaths
+from ..variables import Variables, VariablesEnum, SpecialPaths
+from ..aliases import Aliases
 from ..path import Path
 
 class _ArgCompleters(object):
@@ -20,7 +21,7 @@ class _ArgCompleters(object):
 				return Completion(f"{text}/", display=display, style="class:shell.directory")
 
 			#expand this to check r/w too?
-			if os.access(path_obj, os.X_OK):
+			if SpecialPaths.fileIsExecutable(path_obj):
 				return Completion(text, display=display, style="class:shell.executable")
 
 			return Completion(text, display=display, style="class:shell.file")
@@ -80,7 +81,11 @@ class PromptToolkitCompleter(Completer):
 			arg = arg_match.group(1)
 
 		if arg == document.text_before_cursor: #complete the command
-			print(f"\nSEARCH PATH or CWD if starts with ./ + aliases/functions - {arg}")
+			#check for aliases
+
+			#check for functions
+
+			#check in path if not arg.startswith("./")
 			return []
 
 		#check command specific args
