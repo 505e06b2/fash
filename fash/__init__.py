@@ -79,10 +79,14 @@ class Shell:
 			#	have to be careful for brackets
 			input_text = self.unrollAliases(input_text)
 
-			if not (input_text_expanded_vars := self.expandVariables(input_text)):
+			if (input_text_expanded_vars := self.expandVariables(input_text)) == None:
 				sys.stderr.write(f"{Variables[VariablesEnum.shell_name]}: {input_text}: bad substitution\n")
 				self._last_exit_code = 1
 				continue
+
+			elif input_text_expanded_vars == "":
+				continue
+
 			else:
 				input_text = input_text_expanded_vars
 
@@ -90,7 +94,7 @@ class Shell:
 				command, *args = shlex.split(input_text, comments=True, posix=True)
 
 			except ValueError as e:
-				sys.stderr.write(f"{e.__class__.__name__}: {e}\n")
+				sys.stderr.write(f"{Variables[VariablesEnum.shell_name]}: {e.__class__.__name__}: {e}\n")
 				continue
 
 			args = [Path.expand(x) for x in args]
@@ -100,6 +104,7 @@ class Shell:
 					self._last_exit_code = found_builtin(args) or 0
 
 				else:
+					#check for shebang line and prepend it
 					proc = subprocess.run([command] + args, env=Variables.environment)
 					self._last_exit_code = proc.returncode
 
@@ -112,7 +117,7 @@ class Shell:
 				self._last_exit_code = 1
 
 			except Exception as e:
-				sys.stdout.write(f"{e.__class__.__name__}: {e}\n")
+				sys.stdout.write(f"{Variables[VariablesEnum.shell_name]}: {e.__class__.__name__}: {e}\n")
 				self._last_exit_code = 1
 
 		sys.exit(self._last_exit_code)
