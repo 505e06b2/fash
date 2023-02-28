@@ -7,7 +7,7 @@ from xml.parsers.expat import ExpatError
 
 from .arg_completers import PromptToolkitCompleter
 from .path import Path
-from .variables import Variables, VariablesEnum
+from .variables import Variables, VariablesEnum, SpecialPaths
 
 class Prompt(PromptSession):
 	def _getPromptText(self):
@@ -71,7 +71,7 @@ class Prompt(PromptSession):
 		self._prompt_vars = {
 			r"\u": lambda: Variables[VariablesEnum.username],
 			r"\h": lambda: Variables[VariablesEnum.hostname],
-			r"\w": lambda: Path.collapse(os.getcwd()),
+			r"\w": lambda: Path.collapse(SpecialPaths.collapseHome(os.getcwd())),
 			r"\$": lambda: self._prompt_chars[self._havePrivilege()],
 			#non-standard
 			r"\g": lambda: self._getGitRepoInfo()

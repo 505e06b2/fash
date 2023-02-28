@@ -3,6 +3,7 @@ from pathlib import Path as PathLib
 
 from prompt_toolkit.completion import Completion, Completer
 
+from ..variables import SpecialPaths
 from ..path import Path
 
 class _ArgCompleters(object):
@@ -29,7 +30,7 @@ class _ArgCompleters(object):
 
 		#the .replace() will not account for "\\ "
 		# the PromptToolKitCompleter should not allow a path with this to get here as the space was not escaped
-		incomplete_path = Path.expand(incomplete_path).encode("raw_unicode_escape").decode("unicode_escape").replace(r'\ ', ' ')
+		incomplete_path = Path.expand(SpecialPaths.expandHome(incomplete_path).encode("raw_unicode_escape").decode("unicode_escape").replace(r'\ ', ' '))
 
 		glob_pattern = "*"
 		name_len = 0

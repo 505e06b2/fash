@@ -7,7 +7,7 @@ from prompt_toolkit.lexers import PygmentsLexer
 from .path import Path
 from .builtin_commands import BuiltinCommands
 from .prompt import Prompt
-from .variables import Variables, VariablesEnum
+from .variables import Variables, VariablesEnum, SpecialPaths
 from .aliases import Aliases
 
 from .profile import *
@@ -97,7 +97,7 @@ class Shell:
 				sys.stderr.write(f"{Variables[VariablesEnum.shell_name]}: {e.__class__.__name__}: {e}\n")
 				continue
 
-			args = [Path.expand(x) for x in args]
+			args = [Path.expand(SpecialPaths.expandHome(x)) for x in args]
 
 			try:
 				if found_builtin := self._builtin_commands(command):
