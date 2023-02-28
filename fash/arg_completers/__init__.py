@@ -84,9 +84,13 @@ class PromptToolkitCompleter(Completer):
 			return []
 
 		#check command specific args
-		command, *_ = shlex.split(document.text_before_cursor)
-		if completer := ArgCompleters(command):
-			return self._configureFoundCompletions(completer(arg))
+		try:
+			command, *_ = shlex.split(document.text_before_cursor)
+			if completer := ArgCompleters(command):
+				return self._configureFoundCompletions(completer(arg))
+
+		except ValueError:
+			return []
 
 		#check filesystem
 		if files_found := ArgCompleters._filePath(arg):
