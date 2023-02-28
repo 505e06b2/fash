@@ -111,4 +111,8 @@ class Shell:
 				sys.stdout.write("\n")
 				self._last_exit_code = 1
 
+			except Exception as e:
+				sys.stdout.write(f"{e.__class__.__name__}: {e}\n")
+				self._last_exit_code = 1
+
 		sys.exit(self._last_exit_code)
