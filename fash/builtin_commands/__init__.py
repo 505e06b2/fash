@@ -3,6 +3,7 @@ class BuiltinCommands:
 	from .cd import cd
 	from .eval import eval
 	from .alias import alias
+	from .path import path
 
 	def __call__(self, command):
 		if command.startswith("_"):
