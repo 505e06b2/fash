@@ -1,6 +1,6 @@
 import os, sys
 
-from ..profile.variables import Variables, VariablesEnum
+from ..variables import Variables, VariablesEnum
 
 def exit(self, args=[], stdout=sys.stdout, stderr=sys.stderr):
 	shell_name = Variables[VariablesEnum.shell_name]

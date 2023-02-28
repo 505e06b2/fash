@@ -7,7 +7,7 @@ from xml.parsers.expat import ExpatError
 
 from .arg_completers import PromptToolkitCompleter
 from .path import Path
-from .profile.variables import Variables, VariablesEnum
+from .variables import Variables, VariablesEnum
 
 class Prompt(PromptSession):
 	def _getPromptText(self):

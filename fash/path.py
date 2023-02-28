@@ -1,6 +1,6 @@
 import sys, string
 
-from .profile.variables import Variables, VariablesEnum
+from .variables import Variables, VariablesEnum
 
 class Path:
 	def expand(path):

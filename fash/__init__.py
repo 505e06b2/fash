@@ -7,8 +7,10 @@ from prompt_toolkit.lexers import PygmentsLexer
 from .path import Path
 from .builtin_commands import BuiltinCommands
 from .prompt import Prompt
-from .profile.variables import Variables, VariablesEnum
-from .profile.aliases import Aliases
+from .variables import Variables, VariablesEnum
+from .aliases import Aliases
+
+from .profile import *
 
 class Shell:
 	def __init__(self):
@@ -71,7 +73,7 @@ class Shell:
 			#sort out piping, etc
 
 			#strip out and set environment variables from the start of command, for use with subprocess
-			#	merge os.environ + Variables + inputted vars into a dict for this
+			#	merge Variables.environment + inputted vars into a dict for this
 
 			#unrolling and expanding maybe needs to go after shlex, as variables won't update for ; - pipe does not have this issue though
 			#	have to be careful for brackets

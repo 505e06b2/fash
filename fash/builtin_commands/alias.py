@@ -4,9 +4,8 @@ import os, sys
 from prompt_toolkit.formatted_text import FormattedText
 from prompt_toolkit import print_formatted_text
 
-
-from ..profile.variables import Variables, VariablesEnum
-from ..profile.aliases import Aliases
+from ..variables import Variables, VariablesEnum
+from ..aliases import Aliases
 
 def alias(self, args=[], stdout=sys.stdout, stderr=sys.stderr):
 	if not args:

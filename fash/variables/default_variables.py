@@ -4,47 +4,7 @@ from prompt_toolkit.shortcuts import CompleteStyle
 from prompt_toolkit.styles import style_from_pygments_cls, Style
 from pygments.styles import get_style_by_name
 
-class _Variables(dict): #case insensitive (due to Windows being insensitive)
-	@property
-	def environment(self):
-		return {key: str(value) for key, value in self.items()}
-
-	def _transform_key(self, key):
-		return key.upper()
-
-	def __getitem__(self, key):
-		try:
-			ret = super().__getitem__(self._transform_key(key))
-
-		except KeyError:
-			return ""
-
-		if callable(ret):
-			ret = ret()
-
-		return ret
-
-	def __setitem__(self, key, value):
-		return super().__setitem__(self._transform_key(key), value)
-
-	def __delitem__(self, key):
-		return super().__delitem__(self._transform_key(key))
-
-	def __init__(self, *args, **kwargs):
-		super().__init__(*args, **kwargs)
-
-		#enforce uppercase keys
-		for key, value in self.copy().items():
-			super().__delitem__(key)
-			self[self._transform_key(key)] = value
-
-	def get(self, key, default=None):
-		return super().get(self._transform_key(key), default)
-
-	def pop(self, key):
-		return super().pop(self._transform_key(key))
-
-Variables = _Variables(os.environ)
+from .__init__ import Variables
 
 #for accessing system vars without typos
 class VariablesEnum(object):
@@ -89,23 +49,3 @@ Variables[VariablesEnum.default_style] = Style.from_dict({
 	"shell.executable": "ansigreen bold",
 	"shell.file": "default"
 })
-
-#Import user_variables or create new user_profiles file
-try:
-	from .user_variables import *
-
-except ImportError as e:
-	import sys
-	from datetime import datetime, timezone
-	from pathlib import Path
-	path = Path(__file__)
-	user_path = path.parent / f"user_{path.name}"
-
-	if user_path.exists():
-		print(f"Cannot import {user_path}")
-		sys.exit(1)
-
-	with user_path.open("w") as f:
-		f.write("from .variables import Variables\n")
-		f.write("\n")
-		f.write(f"Variables[\"FIRST_LOGIN\"] = \"{datetime.now(timezone.utc).astimezone().isoformat()}\"\n")
