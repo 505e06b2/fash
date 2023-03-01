@@ -102,6 +102,7 @@ class PromptToolkitCompleter(Completer):
 
 			else:
 				executables_found = {}
+
 				for path_str in reversed(Variables[VariablesEnum.path].collapsed_directories):
 					executables_found.update({ completion.text: completion for completion in ArgCompleters._filePath(f"{path_str}/{arg}", only_executables=True) })
 

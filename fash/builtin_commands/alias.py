@@ -20,6 +20,7 @@ def alias(self, args=[], stdout=sys.stdout, stderr=sys.stderr):
 			]))
 
 		print_formatted_text(*lines, sep="\n", style=Variables[VariablesEnum.default_style])
+		return 0
 
 	#either set aliases, or call them if the arg isn't like a="a"
 
