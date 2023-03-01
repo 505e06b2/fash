@@ -8,30 +8,33 @@ from ..aliases import Aliases
 from ..path import Path
 
 class _ArgCompleters(object):
-	def _filePath(self, incomplete_path, only_directories=False):
-		def createCompletionObject(path_obj, remove_first_x_chars=0):
-			name = path_obj.name
-			text = name[remove_first_x_chars:].replace(" ", r"\ ")
-			display = f"'{name}'" if " " in name else name
+	def _createPathCompletionObject(self, path_obj, remove_first_x_chars=0):
+		name = path_obj.name
+		text = name[remove_first_x_chars:].replace(" ", r"\ ")
+		display = f"'{name}'" if " " in name else name
 
-			if path_obj.is_symlink():
-				return Completion(text, display=display, style="class:shell.symlink")
+		if path_obj.is_symlink():
+			return Completion(text, display=display, style="class:shell.symlink")
 
-			if path_obj.is_dir():
-				return Completion(f"{text}/", display=display, style="class:shell.directory")
+		if path_obj.is_dir():
+			return Completion(f"{text}/", display=display, style="class:shell.directory")
 
-			#expand this to check r/w too?
-			if SpecialPaths.fileIsExecutable(path_obj):
-				return Completion(text, display=display, style="class:shell.executable")
+		#expand this to check r/w too?
+		if SpecialPaths.fileIsExecutable(path_obj):
+			return Completion(text, display=display, style="class:shell.executable")
 
-			return Completion(text, display=display, style="class:shell.file")
+		return Completion(text, display=display, style="class:shell.file")
 
+	def _decodeText(self, text): #move this elsewhere
+		return text.encode("raw_unicode_escape").decode("unicode_escape").replace(r"\ ", " ")
+
+	def _filePath(self, incomplete_path, only_directories=False, only_executables=False):
 		if incomplete_path.startswith(("-", "#", "\"")):
 			return []
 
 		#the .replace() will not account for "\\ "
 		# the PromptToolKitCompleter should not allow a path with this to get here as the space was not escaped
-		incomplete_path = Path.expand(SpecialPaths.expandHome(incomplete_path.encode("raw_unicode_escape").decode("unicode_escape").replace(r'\ ', ' ')))
+		incomplete_path = Path.expand(SpecialPaths.expandHome(self._decodeText(incomplete_path)))
 
 		glob_pattern = "*"
 		name_len = 0
@@ -41,11 +44,18 @@ class _ArgCompleters(object):
 			name_len = len(path_obj.name)
 			path_obj = path_obj.parent
 
-		found_items = path_obj.glob(glob_pattern)
+		found_items = list(path_obj.glob(glob_pattern)) #must not be a generator or will be consumed
+		ret_items = []
 		if only_directories:
-			found_items = filter(lambda x: x.is_dir(), found_items)
+			ret_items += list(filter(lambda x: x.is_dir(), found_items))
 
-		return [createCompletionObject(item, name_len) for item in sorted(found_items, key=lambda x: x.name)]
+		if only_executables:
+			ret_items += list(filter(lambda x: x.is_file() and SpecialPaths.fileIsExecutable(x), found_items))
+
+		if not only_directories and not only_executables:
+			ret_items = found_items
+
+		return [self._createPathCompletionObject(item, name_len) for item in ret_items]
 
 	def __call__(self, command):
 		if command.startswith("_"):
@@ -62,8 +72,8 @@ class _ArgCompleters(object):
 ArgCompleters = _ArgCompleters()
 
 class PromptToolkitCompleter(Completer):
-	def _configureFoundCompletions(self, completions):
-		return [x if isinstance(x, Completion) else Completion(text=x) for x in completions]
+	def _sortCompletions(self, completions):
+		return list(sorted(completions, key=lambda x: x.text))
 
 	def __init__(self, *args, **kwargs):
 		super().__init__(*args, **kwargs)
@@ -81,24 +91,46 @@ class PromptToolkitCompleter(Completer):
 			arg = arg_match.group(1)
 
 		if arg == document.text_before_cursor: #complete the command
-			#check for aliases
+			if not arg:
+				return []
 
-			#check for functions
+			ret_executables = []
 
-			#check in path if not arg.startswith("./")
-			return []
+			#check for files
+			if "/" in arg: #check cwd, might start with ./ or a folder name
+				ret_executables += ArgCompleters._filePath(arg, only_directories=True, only_executables=True)
+
+			else:
+				executables_found = {}
+				for path_str in reversed(Variables[VariablesEnum.path].collapsed_directories):
+					executables_found.update({ completion.text: completion for completion in ArgCompleters._filePath(f"{path_str}/{arg}", only_executables=True) })
+
+				#check for functions
+
+				#check for aliases
+				alias_name = ArgCompleters._decodeText(arg)
+				for alias in Aliases.keys():
+					if alias.startswith(alias_name):
+						#!make this generic so it can can be used with ArgCompleters._createPathCompletionObject
+						text = alias[len(alias_name):].replace(" ", r"\ ")
+						display = f"'{alias}'" if " " in alias else alias
+						executables_found[text] = Completion(text, display=display, style="class:shell.alias")
+
+				ret_executables += list(executables_found.values())
+
+			return self._sortCompletions(ret_executables)
 
 		#check command specific args
 		try:
 			command, *_ = shlex.split(document.text_before_cursor)
 			if completer := ArgCompleters(command):
-				return self._configureFoundCompletions(completer(arg))
+				return self._sortCompletions(completer(arg))
 
 		except ValueError:
 			return []
 
 		#check filesystem
 		if files_found := ArgCompleters._filePath(arg):
-			return self._configureFoundCompletions(files_found)
+			return self._sortCompletions(files_found)
 
 		return []

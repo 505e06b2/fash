@@ -11,6 +11,10 @@ class FolderList:
 	def len(self):
 		return len(self._store)
 
+	@property
+	def collapsed_directories(self):
+		return self._store
+
 	def __repr__(self):
 		if sys.platform == "win32":
 			return self._windows_separator.join([Path.expand(collapsed_path) for collapsed_path in self._store])
