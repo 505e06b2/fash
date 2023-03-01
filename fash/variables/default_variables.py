@@ -5,12 +5,13 @@ from prompt_toolkit.styles import style_from_pygments_cls, Style
 from pygments.styles import get_style_by_name
 
 from .__init__ import Variables, VariablesEnum
+from ..path import Path
 
 #default variables
 Variables[VariablesEnum.shell_name] = "fash"
 Variables[VariablesEnum.PS1] = r"<bold><ansibrightred>\u</ansibrightred>@<ansibrightred>\h</ansibrightred></bold>:<bold><ansicyan>\w</ansicyan>\g</bold>\$ "
 Variables[VariablesEnum.PS1_git_format] = " <ansibrightred>(%s)</ansibrightred>"
-Variables[VariablesEnum.home] = os.environ.get("HOME") or os.environ.get("USERPROFILE") or None #not using pathlib.Path.expanduser allows the use of HOME on Windows in CPython 3.8+
+Variables[VariablesEnum.home] = Path.collapse(os.environ.get("HOME") or os.environ.get("USERPROFILE") or "") #not using pathlib.Path.expanduser allows the use of HOME on Windows in CPython 3.8+
 Variables[VariablesEnum.username] = os.environ.get("USER") or os.environ.get("USERNAME") or "?"
 Variables[VariablesEnum.hostname] = platform.node() or os.environ.get("COMPUTERNAME") or "?"
 

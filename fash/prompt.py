@@ -71,7 +71,7 @@ class Prompt(PromptSession):
 		self._prompt_vars = {
 			r"\u": lambda: Variables[VariablesEnum.username],
 			r"\h": lambda: Variables[VariablesEnum.hostname],
-			r"\w": lambda: Path.collapse(SpecialPaths.collapseHome(os.getcwd())),
+			r"\w": lambda: SpecialPaths.collapseHome(Path.collapse(os.getcwd())),
 			r"\$": lambda: self._prompt_chars[self._havePrivilege()],
 			#non-standard
 			r"\g": lambda: self._getGitRepoInfo()
