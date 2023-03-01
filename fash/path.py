@@ -12,8 +12,8 @@ class Path:
 		return path
 
 	def collapse(path):
-		if sys.platform == "win32" and len(path) > 0 and path[0] in string.ascii_letters: #Windows + C:\ path
+		if sys.platform == "win32" and len(path) >= 3 and path[0] in string.ascii_letters and path[1:3] == ":\\": #Windows + C:\ path
 			#will look like /c/...
-			return f"/{path[0].lower()}/{path[3:]}".replace("\\", "/").rstrip("/")
+			return f"/{path[0].lower()}{path[2:]}".replace("\\", "/").rstrip("/")
 
 		return path
