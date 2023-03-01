@@ -9,8 +9,6 @@ class Path:
 			elif path.startswith("/"):
 				return f"C:/{path[1:]}"
 
-			return path.replace("\\", "/")
-
 		return path
 
 	def collapse(path):
