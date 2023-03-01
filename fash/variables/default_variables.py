@@ -35,5 +35,6 @@ Variables[VariablesEnum.default_style] = Style.from_dict({
 	"shell.symlink": "ansicyan bold",
 	"shell.directory": "ansiblue bold",
 	"shell.executable": "ansigreen bold",
-	"shell.file": "default"
+	"shell.file": "default",
+	"shell.alias": "ansibrightyellow bold"
 })

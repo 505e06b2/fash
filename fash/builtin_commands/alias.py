@@ -14,7 +14,7 @@ def alias(self, args=[], stdout=sys.stdout, stderr=sys.stderr):
 			lines.append(FormattedText([
 				("class:pygments.name.builtin", "alias"),
 				("default", " "),
-				("class:pygments.name.variable", key),
+				("class:shell.alias", key),
 				("default", "="),
 				("class:pygments.string", f"'{value}'")
 			]))
