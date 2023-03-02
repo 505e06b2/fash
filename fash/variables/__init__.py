@@ -1,7 +1,5 @@
 import os
 
-from .folder_list import FolderList
-
 #for accessing system vars without typos
 class VariablesEnum(object):
 	shell_name = "SHELL_NAME"
@@ -11,6 +9,7 @@ class VariablesEnum(object):
 	username = "USERNAME"
 	hostname = "HOSTNAME"
 	path = "PATH"
+	pwd = "PWD"
 
 	#non-standard vars
 	win_executable_extensions = "WIN_EXECUTABLE_EXT"
@@ -50,9 +49,6 @@ class _Variables(dict): #case insensitive (due to Windows being insensitive)
 		for key, value in self.copy().items():
 			super().__delitem__(key)
 			self[self._transform_key(key)] = value
-
-		#special values
-		self[VariablesEnum.path] = FolderList(self[VariablesEnum.path])
 
 	def get(self, key, default=None):
 		return super().get(self._transform_key(key), default)

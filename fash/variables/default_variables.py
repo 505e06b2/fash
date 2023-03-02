@@ -1,10 +1,11 @@
-import os, platform
+import os, sys, platform
 
 from prompt_toolkit.shortcuts import CompleteStyle
 from prompt_toolkit.styles import style_from_pygments_cls, Style
 from pygments.styles import get_style_by_name
 
 from .__init__ import Variables, VariablesEnum
+from .folder_list import FolderList
 from ..path import Path
 
 #default variables
@@ -14,6 +15,17 @@ Variables[VariablesEnum.PS1_git_format] = " <ansibrightred>(%s)</ansibrightred>"
 Variables[VariablesEnum.home] = Path.collapse(os.environ.get("HOME") or os.environ.get("USERPROFILE") or "") #not using pathlib.Path.expanduser allows the use of HOME on Windows in CPython 3.8+
 Variables[VariablesEnum.username] = os.environ.get("USER") or os.environ.get("USERNAME") or "?"
 Variables[VariablesEnum.hostname] = platform.node() or os.environ.get("COMPUTERNAME") or "?"
+
+Variables[VariablesEnum.path] = FolderList(os.environ.get("PATH"))
+
+def _pwd():
+	collapsed = Path.collapse(os.getcwd())
+	if sys.platform == "win32" and len(collapsed) < 3: #at least /x/, not /x
+		return collapsed + "/"
+
+	return collapsed
+
+Variables[VariablesEnum.pwd] = _pwd
 
 Variables[VariablesEnum.win_executable_extensions] = [".exe", ".bat", ".cmd", ".vbs", ".py", ".ps1", ".csx"]
 Variables[VariablesEnum.completion_style] = CompleteStyle.READLINE_LIKE
