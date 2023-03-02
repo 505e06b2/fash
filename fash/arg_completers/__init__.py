@@ -7,24 +7,27 @@ from ..variables import Variables, VariablesEnum, SpecialPaths
 from ..aliases import Aliases
 from ..path import Path
 
+def _createPathCompletionObject(path_obj, remove_first_x_chars=0, style=None):
+	name = path_obj.name
+	text = name[remove_first_x_chars:].replace(" ", r"\ ")
+	display = f"'{name}'" if " " in name else name
+
+	if style != None:
+		return Completion(text, display=display, style=style)
+
+	if path_obj.is_symlink():
+		return Completion(text, display=display, style="class:shell.symlink")
+
+	if path_obj.is_dir():
+		return Completion(f"{text}/", display=display, style="class:shell.directory")
+
+	#expand this to check r/w too?
+	if SpecialPaths.fileIsExecutable(path_obj):
+		return Completion(text, display=display, style="class:shell.executable")
+
+	return Completion(text, display=display, style="class:shell.file")
+
 class _ArgCompleters(object):
-	def _createPathCompletionObject(self, path_obj, remove_first_x_chars=0):
-		name = path_obj.name
-		text = name[remove_first_x_chars:].replace(" ", r"\ ")
-		display = f"'{name}'" if " " in name else name
-
-		if path_obj.is_symlink():
-			return Completion(text, display=display, style="class:shell.symlink")
-
-		if path_obj.is_dir():
-			return Completion(f"{text}/", display=display, style="class:shell.directory")
-
-		#expand this to check r/w too?
-		if SpecialPaths.fileIsExecutable(path_obj):
-			return Completion(text, display=display, style="class:shell.executable")
-
-		return Completion(text, display=display, style="class:shell.file")
-
 	def _decodeText(self, text): #move this elsewhere
 		return text.encode("raw_unicode_escape").decode("unicode_escape").replace(r"\ ", " ")
 
@@ -55,7 +58,7 @@ class _ArgCompleters(object):
 		if not only_directories and not only_executables:
 			ret_items = found_items
 
-		return [self._createPathCompletionObject(item, name_len) for item in ret_items]
+		return [_createPathCompletionObject(item, name_len) for item in ret_items]
 
 	def __call__(self, command):
 		if command.startswith("_"):
@@ -112,10 +115,8 @@ class PromptToolkitCompleter(Completer):
 				alias_name = ArgCompleters._decodeText(arg)
 				for alias in Aliases.keys():
 					if alias.startswith(alias_name):
-						#!make this generic so it can can be used with ArgCompleters._createPathCompletionObject
-						text = alias[len(alias_name):].replace(" ", r"\ ")
-						display = f"'{alias}'" if " " in alias else alias
-						executables_found[text] = Completion(text, display=display, style="class:shell.alias")
+						completion = _createPathCompletionObject(PathLib(alias), len(alias_name), style="class:shell.alias") #using PathLib here, just for the function to work, is a bit dodgy
+						executables_found[completion.text] = completion
 
 				ret_executables += list(executables_found.values())
 
