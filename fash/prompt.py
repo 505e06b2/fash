@@ -1,4 +1,4 @@
-import os, sys, ctypes, subprocess, shlex
+import os, sys, subprocess, shlex
 
 from prompt_toolkit import PromptSession
 from prompt_toolkit.formatted_text import HTML
@@ -7,6 +7,7 @@ from xml.parsers.expat import ExpatError
 
 from .arg_completers import PromptToolkitCompleter
 from .variables import Variables
+from .platform import is_cygwin
 
 class Prompt(PromptSession):
 	def _getPromptText(self):
@@ -38,8 +39,8 @@ class Prompt(PromptSession):
 		return ""
 
 	def _havePrivilege(self):
-		if sys.platform == "win32":
-			return (ctypes.windll.shell32.IsUserAnAdmin() != 0)
+		if is_cygwin:
+			return (544 in os.getgroups()) #https://cygwin.com/pipermail/cygwin/2015-February/219493.html
 		else:
 			return (os.geteuid() == 0)
 
