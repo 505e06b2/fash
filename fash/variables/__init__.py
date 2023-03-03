@@ -3,7 +3,7 @@ import os
 from .file_path import FilePath
 
 class _Variables(dict): #case insensitive (due to Windows being insensitive)
-	from .default_variables import getDefaultVariables as _getDefaultVariables
+	from .default_variables import setDefaultVariables as _setDefaultVariables
 
 	@property
 	def environment(self):
@@ -38,7 +38,7 @@ class _Variables(dict): #case insensitive (due to Windows being insensitive)
 			super().__delitem__(key)
 			self[self._transform_key(key)] = value
 
-		self.System = self._getDefaultVariables()
+		self.System = self._setDefaultVariables()
 		self.FilePath = FilePath(self)
 
 	def get(self, key, default=None):

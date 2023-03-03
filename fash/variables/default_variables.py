@@ -23,7 +23,7 @@ def _createProperty(parent, variable_name, default_value=""):
 
 	return property(_get, _set, _del)
 
-def getDefaultVariables(self):
+def setDefaultVariables(self):
 	_SystemVariables.shell_name     = _createProperty(self, "SHELL_NAME",     "fash")
 	_SystemVariables.PS1            = _createProperty(self, "PS1",            r"<bold><ansibrightred>\u</ansibrightred>@<ansibrightred>\h</ansibrightred></bold>:<bold><ansicyan>\w</ansicyan>\g</bold>\$ ")
 	_SystemVariables.PS1_git_format = _createProperty(self, "PS1_GIT_FORMAT", " <ansibrightred>(%s)</ansibrightred>")
