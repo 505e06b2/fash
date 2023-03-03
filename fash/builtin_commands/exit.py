@@ -1,9 +1,9 @@
 import os, sys
 
-from ..variables import Variables, VariablesEnum
+from ..variables import Variables
 
 def exit(self, args=[], stdout=sys.stdout, stderr=sys.stderr):
-	shell_name = Variables[VariablesEnum.shell_name]
+	shell_name = Variables.System.shell_name
 
 	stdout.write("exit\n")
 

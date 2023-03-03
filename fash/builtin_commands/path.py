@@ -1,10 +1,10 @@
 import os, sys
 
-from ..variables import Variables, VariablesEnum
+from ..variables import Variables
 
 def path(self, args=[], stdout=sys.stdout, stderr=sys.stderr):
-	shell_name = Variables[VariablesEnum.shell_name]
-	path_var = Variables[VariablesEnum.path]
+	shell_name = Variables.System.shell_name
+	path_var = Variables.System.path
 
 	if not args:
 		if not path_var.len:

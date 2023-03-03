@@ -1,4 +1,3 @@
-from .__init__ import Aliases
-
-Aliases["="] = "eval"
-Aliases["ls"] = "ls --color"
+def setDefaults(self):
+	self["="] = "eval"
+	self["ls"] = "ls --color"

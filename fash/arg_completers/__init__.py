@@ -3,9 +3,8 @@ from pathlib import Path as PathLib
 
 from prompt_toolkit.completion import Completion, Completer
 
-from ..variables import Variables, VariablesEnum, SpecialPaths
+from ..variables import Variables
 from ..aliases import Aliases
-from ..path import Path
 
 def _createPathCompletionObject(path_obj, remove_first_x_chars=0, style=None):
 	name = path_obj.name
@@ -22,7 +21,7 @@ def _createPathCompletionObject(path_obj, remove_first_x_chars=0, style=None):
 		return Completion(f"{text}/", display=display, style="class:shell.directory")
 
 	#expand this to check r/w too?
-	if SpecialPaths.fileIsExecutable(path_obj):
+	if Variables.FilePath.fileIsExecutable(path_obj):
 		return Completion(text, display=display, style="class:shell.executable")
 
 	return Completion(text, display=display, style="class:shell.file")
@@ -37,7 +36,7 @@ class _ArgCompleters(object):
 
 		#the .replace() will not account for "\\ "
 		# the PromptToolKitCompleter should not allow a path with this to get here as the space was not escaped
-		incomplete_path = Path.expand(SpecialPaths.expandHome(self._decodeText(incomplete_path)))
+		incomplete_path = Variables.FilePath.expandHome(self._decodeText(incomplete_path))
 
 		glob_pattern = "*"
 		name_len = 0
@@ -53,7 +52,7 @@ class _ArgCompleters(object):
 			ret_items += list(filter(lambda x: x.is_dir(), found_items))
 
 		if only_executables:
-			ret_items += list(filter(lambda x: x.is_file() and SpecialPaths.fileIsExecutable(x), found_items))
+			ret_items += list(filter(lambda x: x.is_file() and Variables.FilePath.fileIsExecutable(x), found_items))
 
 		if not only_directories and not only_executables:
 			ret_items = found_items
@@ -106,7 +105,7 @@ class PromptToolkitCompleter(Completer):
 			else:
 				executables_found = {}
 
-				for path_str in reversed(Variables[VariablesEnum.path].collapsed_directories):
+				for path_str in reversed(Variables.System.path.collapsed_directories):
 					executables_found.update({ completion.text: completion for completion in ArgCompleters._filePath(f"{path_str}/{arg}", only_executables=True) })
 
 				#check for functions

@@ -4,10 +4,9 @@ from pygments.lexers.shell import BashLexer
 
 from prompt_toolkit.lexers import PygmentsLexer
 
-from .path import Path
 from .builtin_commands import BuiltinCommands
 from .prompt import Prompt
-from .variables import Variables, VariablesEnum, SpecialPaths
+from .variables import Variables
 from .aliases import Aliases
 
 from .profile import *
@@ -80,7 +79,7 @@ class Shell:
 			input_text = self.unrollAliases(input_text)
 
 			if (input_text_expanded_vars := self.expandVariables(input_text)) == None:
-				sys.stderr.write(f"{Variables[VariablesEnum.shell_name]}: {input_text}: bad substitution\n")
+				sys.stderr.write(f"{Variables.System.shell_name}: {input_text}: bad substitution\n")
 				self._last_exit_code = 1
 				continue
 
@@ -94,10 +93,10 @@ class Shell:
 				command, *args = shlex.split(input_text, comments=True, posix=True)
 
 			except ValueError as e:
-				sys.stderr.write(f"{Variables[VariablesEnum.shell_name]}: {e.__class__.__name__}: {e}\n")
+				sys.stderr.write(f"{Variables.System.shell_name}: {e.__class__.__name__}: {e}\n")
 				continue
 
-			args = [Path.expand(SpecialPaths.expandHome(x)) for x in args]
+			args = [Variables.FilePath.expandHome(x) for x in args]
 
 			try:
 				if found_builtin := self._builtin_commands(command):
@@ -117,7 +116,7 @@ class Shell:
 				self._last_exit_code = 1
 
 			except Exception as e:
-				sys.stdout.write(f"{Variables[VariablesEnum.shell_name]}: {e.__class__.__name__}: {e}\n")
+				sys.stdout.write(f"{Variables.System.shell_name}: {e.__class__.__name__}: {e}\n")
 				self._last_exit_code = 1
 
 		sys.exit(self._last_exit_code)

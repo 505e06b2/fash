@@ -6,12 +6,11 @@ from prompt_toolkit.formatted_text import HTML
 from xml.parsers.expat import ExpatError
 
 from .arg_completers import PromptToolkitCompleter
-from .path import Path
-from .variables import Variables, VariablesEnum, SpecialPaths
+from .variables import Variables
 
 class Prompt(PromptSession):
 	def _getPromptText(self):
-		parsed_prompt_string = Variables[VariablesEnum.PS1]
+		parsed_prompt_string = Variables.System.PS1
 		for key, func in self._prompt_vars.items():
 			parsed_prompt_string = parsed_prompt_string.replace(key, func())
 		try:
@@ -25,7 +24,7 @@ class Prompt(PromptSession):
 			process = subprocess.run(shlex.split(command_line), check=True, encoding="utf8", stdout=subprocess.PIPE, stderr=subprocess.DEVNULL)
 			return process.stdout.strip()
 
-		git_format = Variables[VariablesEnum.PS1_git_format]
+		git_format = Variables.System.PS1_git_format
 		try:
 			if branch := execGitCmd("git branch --show-current"):
 				return (git_format % branch)
@@ -52,8 +51,8 @@ class Prompt(PromptSession):
 			complete_while_typing=False,
 			complete_in_thread=True,
 			completer=self._completer,
-			complete_style=Variables[VariablesEnum.completion_style],
-			style=Variables[VariablesEnum.default_style],
+			complete_style=Variables.System.completion_style,
+			style=Variables.System.default_style,
 			include_default_pygments_style=False,
 			**kwargs
 		)
@@ -69,9 +68,9 @@ class Prompt(PromptSession):
 		)
 
 		self._prompt_vars = {
-			r"\u": lambda: Variables[VariablesEnum.username],
-			r"\h": lambda: Variables[VariablesEnum.hostname],
-			r"\w": lambda: SpecialPaths.collapseHome(Path.collapse(os.getcwd())),
+			r"\u": lambda: Variables.System.username,
+			r"\h": lambda: Variables.System.hostname,
+			r"\w": lambda: Variables.FilePath.collapseHome(os.getcwd()),
 			r"\$": lambda: self._prompt_chars[self._havePrivilege()],
 			#non-standard
 			r"\g": lambda: self._getGitRepoInfo()

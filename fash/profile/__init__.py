@@ -1,7 +1,7 @@
 """
 Make sure to import these for altering the state in any scripts:
 
-from fash.variables import Variables, VariablesEnum
+from fash.variables import Variables
 from fash.aliases import Aliases
 """
 

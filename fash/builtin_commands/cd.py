@@ -1,12 +1,12 @@
 import os, sys
 
-from ..variables import Variables, VariablesEnum
+from ..variables import Variables
 
 def cd(self, args=[], stdout=sys.stdout, stderr=sys.stderr):
-	shell_name = Variables[VariablesEnum.shell_name]
+	shell_name = Variables.System.shell_name
 
 	if not args:
-		home_dir = Variables[VariablesEnum.home]
+		home_dir = Variables.System.home
 		if not home_dir:
 			stderr.write(f"{shell_name}: cd: could not find HOME environment variable\n")
 			return 1

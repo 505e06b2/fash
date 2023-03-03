@@ -1,22 +1,10 @@
 import os
 
-#for accessing system vars without typos
-class VariablesEnum(object):
-	shell_name = "SHELL_NAME"
-	PS1 = "PS1"
-	PS1_git_format = "PS1_GIT_FORMAT"
-	home = "HOME"
-	username = "USERNAME"
-	hostname = "HOSTNAME"
-	path = "PATH"
-	pwd = "PWD"
-
-	#non-standard vars
-	win_executable_extensions = "WIN_EXECUTABLE_EXT"
-	completion_style = "COMPLETION_STYLE"
-	default_style = "DEFAULT_STYLE"
+from .file_path import FilePath
 
 class _Variables(dict): #case insensitive (due to Windows being insensitive)
+	from .default_variables import getDefaultVariables as _getDefaultVariables
+
 	@property
 	def environment(self):
 		return {key: str(value) for key, value in self.items()}
@@ -50,6 +38,9 @@ class _Variables(dict): #case insensitive (due to Windows being insensitive)
 			super().__delitem__(key)
 			self[self._transform_key(key)] = value
 
+		self.System = self._getDefaultVariables()
+		self.FilePath = FilePath(self)
+
 	def get(self, key, default=None):
 		return super().get(self._transform_key(key), default)
 
@@ -57,6 +48,3 @@ class _Variables(dict): #case insensitive (due to Windows being insensitive)
 		return super().pop(self._transform_key(key))
 
 Variables = _Variables(os.environ)
-
-from .default_variables import *
-from .special_paths import *
