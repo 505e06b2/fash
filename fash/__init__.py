@@ -103,7 +103,6 @@ class Shell:
 					self._last_exit_code = found_builtin(args) or 0
 
 				else:
-					#check for shebang line and prepend it
 					proc = subprocess.run([command] + args, env=Variables.environment)
 					self._last_exit_code = proc.returncode
 
