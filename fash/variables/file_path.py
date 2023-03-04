@@ -18,6 +18,10 @@ class FilePath:
 		if path_str.startswith(home):
 			return f"~{path_str[len(home):]}"
 
+		home = str(Path(home).resolve())
+		if path_str.startswith(home):
+			return f"~{path_str[len(home):]}"
+
 		return path_str
 
 	def fileIsExecutable(self, path_str):
