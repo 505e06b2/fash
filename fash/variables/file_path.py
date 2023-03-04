@@ -1,6 +1,8 @@
 import os, sys
 from pathlib import Path
 
+from ..platform import is_cygwin
+
 _home_char = "~"
 
 class FilePath:
@@ -29,7 +31,7 @@ class FilePath:
 
 		is_executable = os.access(path, os.X_OK)
 
-		if is_executable and sys.platform == "win32":
-			is_executable = (path.suffix.lower() in parent[VariableEnums.win_executable_extensions])
+		if is_executable and is_cygwin:
+			is_executable = (path.suffix.lower() in self._parent.System.win_executable_extensions)
 
 		return is_executable
