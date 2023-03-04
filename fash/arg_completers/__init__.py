@@ -92,6 +92,8 @@ class PromptToolkitCompleter(Completer):
 		else:
 			arg = arg_match.group(1)
 
+		#check for variable
+
 		if arg == document.text_before_cursor: #complete the command
 			if not arg:
 				return []
