@@ -1,4 +1,4 @@
-import os, sys
+import sys
 
 from ..variables import Variables
 

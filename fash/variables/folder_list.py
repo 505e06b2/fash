@@ -1,5 +1,3 @@
-import sys
-
 class FolderList:
 	@property
 	def string(self):

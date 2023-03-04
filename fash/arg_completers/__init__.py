@@ -1,4 +1,4 @@
-import os, re, stat, shlex
+import re, shlex
 from pathlib import Path as PathLib
 
 from prompt_toolkit.completion import Completion, Completer

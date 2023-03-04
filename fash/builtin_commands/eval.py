@@ -1,4 +1,3 @@
-from inspect import trace
 import sys, builtins
 
 def eval(self, args=[], stdout=sys.stdout, stderr=sys.stderr):

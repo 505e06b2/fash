@@ -1,5 +1,4 @@
-from cgitb import text
-import os, sys
+import sys
 
 from prompt_toolkit.formatted_text import FormattedText
 from prompt_toolkit import print_formatted_text

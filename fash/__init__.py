@@ -1,4 +1,4 @@
-import os, sys, subprocess, shlex, re
+import sys, subprocess, shlex, re
 
 from pygments.lexers.shell import BashLexer
 
