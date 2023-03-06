@@ -36,20 +36,27 @@ def setDefaults(self):
 	_SystemVariables.win_executable_extensions = _createProperty(self, "WIN_EXECUTABLE_EXT", [".exe", ".bat", ".cmd", ".vbs", ".py", ".ps1", ".csx"])
 	_SystemVariables.completion_style =          _createProperty(self, "COMPLETION_STYLE",   CompleteStyle.READLINE_LIKE)
 
-	#To find the keys for the following dict, in Python REPL:
+	#To find the keys for the following dict, in Python REPL (PYTHONPATH may need to be set):
 	"""
-	from prompt_toolkit.document import Document
-	from prompt_toolkit.lexers import PygmentsLexer
-	from pygments.lexers.shell import BashLexer
-	PygmentsLexer(BashLexer).lex_document(Document("[test line]"))(0)
+from prompt_toolkit.document import Document
+from prompt_toolkit.lexers import PygmentsLexer
+from fash.parsing.lexer import Lexer
+PygmentsLexer(Lexer).lex_document(Document("[test line]"))(0)
 	"""
-	#made to support white on black, 16 colours - loosely following the default for naming: https://github.com/pygments/pygments/blob/master/pygments/styles/default.py
+	#made to support white on black, 16 colours
 	_SystemVariables.default_style = _createProperty(self, "DEFAULT_STYLE", Style.from_dict({
-		"pygments.keyword": "ansibrightgreen",
+		"pygments.keyword": "ansiblue",
+
+		"pygments.comment": "ansibrightblack",
+
+		"pygments.name": "ansibrightcyan",
 		"pygments.name.builtin": "ansibrightgreen",
-		"pygments.name.variable": "ansibrightcyan",
+
 		"pygments.literal.string": "ansibrightyellow",
-		"pygments.literal.string.escape": "ansibrightblue",
+		"pygments.literal.string.escape": "ansibrightblack",
+		"pygments.literal.string.interpol": "ansiblue",
+
+		"pygments.literal.number": "ansibrightyellow",
 
 		"shell.symlink": "ansicyan bold",
 		"shell.directory": "ansiblue bold",
