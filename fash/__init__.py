@@ -1,6 +1,6 @@
 import sys, subprocess, shlex, re
 
-from pygments.lexers.shell import BashLexer
+from .parsing.lexer import Lexer
 
 from prompt_toolkit.lexers import PygmentsLexer
 
@@ -22,7 +22,7 @@ class Shell:
 	def unrollAliases(self, line):
 		try:
 			command, *rest_of_line = line.split(maxsplit=1)
-			rest_of_line = ''.join(rest_of_line)
+			rest_of_line = "".join(rest_of_line)
 
 			alias = Aliases.get(command)
 
@@ -52,7 +52,7 @@ class Shell:
 	def interactiveMode(self):
 		while True:
 			try:
-				input_text = self._prompt(lexer=PygmentsLexer(BashLexer)) #temporary lexer
+				input_text = self._prompt(lexer=PygmentsLexer(Lexer))
 
 			except EOFError:
 				sys.stdout.write("exit\n")

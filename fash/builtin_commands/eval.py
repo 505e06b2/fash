@@ -2,7 +2,7 @@ import sys, builtins
 
 def eval(self, args=[], stdout=sys.stdout, stderr=sys.stderr):
 	try:
-		returned = builtins.eval(' '.join(args))
+		returned = builtins.eval(" ".join(args))
 		if type(returned) == int:
 			stdout.write(f"{returned} | 0x{returned:x} | 0b{returned:b}\n")
 
