@@ -49,19 +49,21 @@ class Prompt(PromptSession):
 			self._getPromptText(),
 			*args,
 
-			complete_while_typing=False,
-			complete_in_thread=True,
-			completer=self._completer,
 			complete_style=Variables.System.completion_style,
 			style=Variables.System.default_style,
-			include_default_pygments_style=False,
 			**kwargs
 		)
 
 	def __init__(self, *args, **kwargs):
-		super().__init__(*args, **kwargs)
+		super().__init__(
+			*args,
 
-		self._completer = PromptToolkitCompleter()
+			complete_while_typing=False,
+			complete_in_thread=True,
+			completer=PromptToolkitCompleter(),
+			include_default_pygments_style=False,
+			**kwargs
+		)
 
 		self._prompt_chars = (
 			"@", #standard
