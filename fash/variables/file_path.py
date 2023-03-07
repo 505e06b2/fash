@@ -31,7 +31,7 @@ class FilePath:
 
 		is_executable = os.access(path, os.X_OK)
 
-		if is_executable and is_cygwin:
+		if is_cygwin and not is_executable:
 			is_executable = (path.suffix.lower() in self._parent.System.win_executable_extensions)
 
 		return is_executable

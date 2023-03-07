@@ -33,7 +33,9 @@ def setDefaults(self):
 	_SystemVariables.path           = _createProperty(self, "PATH",           FolderList(os.environ.get("PATH")))
 	_SystemVariables.pwd            = _createProperty(self, "PWD",            os.getcwd)
 
-	_SystemVariables.win_executable_extensions = _createProperty(self, "WIN_EXECUTABLE_EXT", [".exe", ".bat", ".cmd", ".vbs", ".py", ".ps1", ".csx"])
+	#Force these extensions to always be executable
+	#	in Cygwin/MSYS2, exes are always set, and any script that begins with a shebang line is set implicitly
+	_SystemVariables.win_executable_extensions = _createProperty(self, "WIN_EXECUTABLE_EXT", [".bat", ".cmd"])
 	_SystemVariables.completion_style =          _createProperty(self, "COMPLETION_STYLE",   CompleteStyle.READLINE_LIKE)
 
 	#To find the keys for the following dict, in Python REPL (PYTHONPATH may need to be set):
